@@ -1,0 +1,13 @@
+[Unit]
+Description=FORK-MONITOR
+
+[Service]
+Type=simple 
+ExecStart=/bin/sh -c "/home/ubuntu/client/build/forkmonitor /tmp/commsocket 10.0.3.1 8080"
+Restart=on-failure
+ExecStartPre=/bin/sh -c "if [ -e /tmp/commsocket ] ; then  rm /tmp/commsocket; fi"
+ExecStartPost=/bin/sh -c "chmod +777 /tmp/commsocket"
+
+
+[Install]
+WantedBy=multi-user.target

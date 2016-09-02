@@ -1,0 +1,10 @@
+[Unit]
+Description = Web Crawler
+
+[Service]
+Type = simple
+Environment="LD_PRELOAD=/home/ubuntu/client/build/libforkmonitor.so" "FORKMONITOR_SOCKET=/tmp/commsocket"
+ExecStart=/bin/sh -c "python /home/ubuntu/web_crawler/crawler.py"
+
+[Install]
+WantedBy=multi-user.target

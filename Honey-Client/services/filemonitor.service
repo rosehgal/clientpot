@@ -1,0 +1,9 @@
+[Unit]
+Description=FILE MONITOR
+
+[Service]
+Type=simple 
+ExecStart=/home/ubuntu/client/build/filemonitor /tmp/,access,modify,create  /,create,modify,delete 10.0.3.1 8080
+
+[Install]
+WantedBy=multi-user.target
