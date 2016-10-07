@@ -15,8 +15,8 @@ ___
 2. create a lxc guest machine name it ub1
    sudo lxc-create -n ub1 -t ubuntu
    Create a lxc machine for ubuntu named ub1
-   the name must be **ub1** as it is hardcoded in the system
-   make sure the ip allocated to **lxcbr0** is from the NAT **10.0.3.0/24** else we need to change the system service files
+   The name must be **ub1** as it is hardcoded in the system
+   Make sure the ip allocated to **lxcbr0** is from the NAT **10.0.3.0/24** else we need to change the system service files
 
 3. install necessary utils in lxc_guest
    sudo lxc-start -n ub1 && sudo lxc-console -n ub1
