@@ -42,7 +42,7 @@ you should start logging_server with the default port 8080 else need to change t
 
    **filemonitor.service**  
         If the defualt of port of logging server is different than 8080, change in the argument given in EXECSTART of this service
-        Default watches are addded to /tmp/ and / directory, that can be added with more watches by specifying in EXECSTART : syntax   <directory_name>/,<PERMISSIONS_FOR_WATCH>,[<PERMISSIONS_FOR_WATCH>]  
+        Default watches are addded to /tmp/ and / directory, that can be added with more watches by specifying in EXECSTART : syntax   [directory_name]/,[PERMISSIONS_FOR_WATCH],[PERMISSIONS_FOR_WATCH], ...  
         PERMISSIONS_FOR_WATCH includes : ACCESS CREATE DELETE MODIFY ISDIR OPEN  
         If server(lxc host belongs to different NAT) change the server IP relapce it with 10.0.3.1  
 
