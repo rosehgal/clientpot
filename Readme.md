@@ -1,11 +1,23 @@
+# ClientPot:
+
+## What is Clientpot?
+
+Honeypots are security devices whose value lie in being probed and compromised. Traditional honeypots are servers (or devices that expose server services) that wait passively to be attacked. **Client Honeypots** are active security devices in search of malicious servers that attack clients. The client honeypot poses as a client and interacts with the server to examine whether an attack has occurred.
+
+**Clientpot** is a kind a client honeypot for the linux systems, which crawls the potentially malicious web servers and log all the suspicious activity occured on the client side. Based on the changes occured in linux **file system** and linux **process tree**, logging server decides if the web server is malicous or not.
+
+___
+
+## Installation steps(using Ubuntu or any debian distro)
+
 1)sudo apt-get install lxc lxc-templates
 2)create a lxc guest machine name it ub1
----- 
+----
 sudo lxc-create -n ub1 -t ubuntu
 Create a lxc machine for ubuntu named ub1
 the name must be **ub1** as it is hardcoded in the system
 make sure the ip allocated to **lxcbr0** is from the NAT **10.0.3.0/24** else we need to change the system service files
----- 
+----
 
 
 
@@ -28,7 +40,7 @@ cd ./server
 make
 cd build
 ./server $PORT_NUMBER
-**This is our logging Server** 
+**This is our logging Server**
 ----
 For setting up log location, change the value of variable LOG_LOCATION in server.h before make,*Make sure that folder exist*.
 you should start logging_server with the default port 8080 else need to change the system service file a bit
@@ -43,7 +55,7 @@ you should start logging_server with the default port 8080 else need to change t
         Default watches are addded to /tmp/ and / directory, that can be added with more watches by specifying in EXECSTART : syntax <directory_name>/,<PERMISSIONS_FOR_WATCH>,[<PERMISSIONS_FOR_WATCH>]
         PERMISSIONS_FOR_WATCH includes : ACCESS CREATE DELETE MODIFY ISDIR OPEN
         If server(lxc host belongs to different NAT) change the server IP relapce it with 10.0.3.1
-        
+
 **forkmonitor.service**
         if Applicable : Apply changes to server IP and PORT in EXECSTART
 
@@ -51,7 +63,7 @@ you should start logging_server with the default port 8080 else need to change t
         invokes crawler service that runs default on port 7070, dont change this
 
 *make sure to give all permissions to service files after copying*
-        
+
 
 
 
@@ -69,17 +81,3 @@ sudo python3 lxc_server.py 7070 *<URL_TO_CRAWL>*
 
 8)logs will be created to the log location specified.
 Analyse the logs manually.
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
