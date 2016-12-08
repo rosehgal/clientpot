@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Clientpot by r0hi7</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Clientpot</h1>
+        <h2>High Interaction LXC based Active HoneyPot</h2>
+        <a href="https://github.com/r0hi7/clientpot" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="clientpot" class="anchor" href="#clientpot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ClientPot:</h1>
+
+<h2>
+<a id="what-is-clientpot" class="anchor" href="#what-is-clientpot" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What is Clientpot?</h2>
+
+<p>Honeypots are security devices whose value lie in being probed and compromised. Traditional honeypots are servers (or devices that expose server services) that wait passively to be attacked. <strong>Client Honeypots</strong> are active security devices in search of malicious servers that attack clients. The client honeypot poses as a client and interacts with the server to examine whether an attack has occurred.</p>
+
+<p><strong>Clientpot</strong> is a kind a client honeypot for the linux systems, which crawls the potentially malicious web servers and log all the suspicious activity occured on the client side. Based on the changes occured in linux <strong>file system</strong> and linux <strong>process tree</strong>, logging server decides if the web server is malicous or not.</p>
+
+<hr>
+
+<h2>
+<a id="installation-stepsusing-ubuntu-or-any-debian-distro" class="anchor" href="#installation-stepsusing-ubuntu-or-any-debian-distro" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation steps(using Ubuntu or any debian distro)</h2>
+
+<ol>
+<li>
+<p>Make your system conatiners workable.</p>
+
+<pre><code>  sudo apt-get install lxc lxc-templates
+</code></pre>
+</li>
+<li>
+<p>create a lxc guest machine name it ub1</p>
+
+<pre><code>  sudo lxc-create -n ub1 -t ubuntu
+</code></pre>
+
+<p>Create a lxc machine for ubuntu named ub1<br>
+The name must be <strong>ub1</strong> as it is hardcoded in the system<br>
+Make sure the ip allocated to <strong>lxcbr0</strong> is from the NAT <strong>10.0.3.0/24</strong> else we need to change the system service files</p>
+</li>
+<li>
+<p>install necessary utils in lxc_guest</p>
+
+<pre><code>  sudo lxc-start -n ub1 &amp;&amp; sudo lxc-console -n ub1
+</code></pre>
+
+<p><strong>login</strong>-ubuntu<br>
+<strong>passwrod</strong>-ubuntu  </p>
+
+<pre><code>sudo apt-get install less gcc g++ make zip tar wget curl lynx
+</code></pre>
+</li>
+<li>
+<p>Copy ./server in current machine on which lxc-host runs(<strong>This is our logging Server</strong>).</p>
+
+<pre><code>  build the server  
+  cd ./server  
+  make  
+  cd build  
+  ./server $PORT_NUMBER  
+</code></pre>
+
+<p>For setting up log location, change the value of variable LOG_LOCATION in server.h before make,<em>Make sure that folder exist</em>.
+you should start logging_server with the default port 8080 else need to change the system service file a bit
+<strong>Server need to be started before the request is sent from the cralwer.</strong></p>
+</li>
+<li>
+<p>Copy the servcices in the service folder to lxc_guest ub1</p>
+
+<p><strong>filemonitor.service</strong><br>
+    If the defualt of port of logging server is different than 8080, change in the argument given in EXECSTART of this service
+    Default watches are addded to /tmp/ and / directory, that can be added with more watches by specifying in EXECSTART:  </p>
+
+<pre><code>  syntax : [directory_name]/,[PERMISSIONS_FOR_WATCH],[PERMISSIONS_FOR_WATCH], ... 
+</code></pre>
+
+<pre><code>PERMISSIONS_FOR_WATCH includes : ACCESS CREATE DELETE MODIFY ISDIR OPEN  
+If server(lxc host belongs to different NAT) change the server IP relapce it with 10.0.3.1  
+</code></pre>
+
+<p><strong>forkmonitor.service</strong><br>
+    If Applicable : Apply changes to server IP and PORT in EXECSTART  </p>
+
+<p><strong>crawler.service</strong><br>
+    Invokes crawler service that runs default on port 7070, dont change this  </p>
+
+<p><em>make sure to give all permissions to service files after copying</em>  </p>
+</li>
+<li>
+<p>stop the lxc_guest ub1</p>
+
+<pre><code>  sudo lxc-stop -n ub1
+</code></pre>
+
+<p>This will be treated as the safe copy, that will be restored after every request</p>
+</li>
+<li>
+<p>In the Host machine. Goto lxc-scripts folder and run</p>
+
+<pre><code>  sudo python3 lxc_server.py 7070 *&lt;URL_TO_CRAWL&gt;*
+</code></pre>
+
+<p><strong>remember 7070 is harcoded default port for web_crawler service</strong></p>
+</li>
+<li>
+<p>logs will be created to the log location specified.</p>
+
+<p>Analyse the logs manually.</p>
+</li>
+</ol>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/r0hi7/clientpot/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/r0hi7/clientpot/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/r0hi7/clientpot"></a> is maintained by <a href="https://github.com/r0hi7">r0hi7</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
